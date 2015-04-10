@@ -260,6 +260,7 @@ class StationFileController extends BaseController {
 
         //return Response::json($response); // was erroring with Resource interpreted as Document but transferred with MIME type application/json: "/station/file/upload".
         echo json_encode($response);
+        exit;
 	}
 
 	private function fetch_original($filename, $app_config){
