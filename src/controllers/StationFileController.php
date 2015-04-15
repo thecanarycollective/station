@@ -224,16 +224,19 @@ class StationFileController extends BaseController {
 		$app_config					= StationConfig::app();
 		$success 					= FALSE;
 		$message 					= '';
-		$field_is_uploadable 		= $element['type'] == 'image' || (isset($element['embeddable']) && $element['embeddable']);
+		$is_embeddable 				= isset($element['embeddable']) && $element['embeddable'];
+		$is_image_element	 		= $element['type'] == 'image';
+		$allowed_image_extensions	= ['png', 'gif', 'jpg', 'jpeg', 'PNG', 'GIF', 'JPG', 'JPEG'];
+		$allowed_file_extensions	= ['pdf', 'zip', 'doc', 'docx', 'xls', 'xlsx'];
+		$is_image_mime 				= strpos($mime, 'image') !== FALSE;
 
 		Input::file('uploaded_file')->move($this->tmp_dir, $new_file_name);
 
-		if ($field_is_uploadable){
+		if ($is_image_mime){
+			
+			$bad_image = !in_array($extension, $allowed_image_extensions);
 
-			$allowed_image_extensions	= ['png', 'gif', 'jpg', 'jpeg', 'PNG', 'GIF', 'JPG', 'JPEG'];
-			$bad_image = strpos($mime, 'image') === FALSE || !in_array($extension, $allowed_image_extensions);
-
-			if ($bad_image) return Response::json(['success' => FALSE, 'reason' => 'not a proper image']);
+			if ($bad_image) return Response::json(['success' => FALSE, 'reason' => 'not a proper or allowed image format']);
 
 			$allow_upsize	= isset($element['allow_upsize']) && $element['allow_upsize'];
 			$all_sizes		= $panel->img_sizes_for($user_scope, $app_config);
@@ -242,21 +245,40 @@ class StationFileController extends BaseController {
 			$success 		= $manipulations['n_sent'] > 0;
 			$message 		= $manipulations['n_sent'].' manipulations made and sent to S3';
 
-		} else { // file?
+			$response = [
 
-			// TODO: deal with non-images here. check for allowed types. then just move and send to S3.
+				'success'		=> $success,
+				'message'		=> $message,
+				'insert_id'		=> isset($medium->id) ? $medium->id : FALSE,
+				'file_uri_stub'	=> 'http://'.$app_config['media_options']['AWS']['bucket'].'.s3.amazonaws.com/',
+				'file_uri'		=> isset($manipulations['file_name']) ? 'http://'.$app_config['media_options']['AWS']['bucket'].'.s3.amazonaws.com/'.'station_thumbs_lg/'.$manipulations['file_name'] : FALSE,
+				'file_name'		=> isset($manipulations['file_name']) ? $manipulations['file_name'] : FALSE,
+				'is_embeddable' => $is_embeddable,
+				'is_image' 		=> TRUE,
+	        ];
+
+		} else { // non-image file
+
+			$bad_file = !in_array($extension, $allowed_file_extensions);
+
+			if ($bad_file) return Response::json(['success' => FALSE, 'reason' => 'not a proper or allowed file format']);
+
+			$this->send_to_s3($new_file_name, 'files', $app_config, TRUE);
+			$success = TRUE;
+			$message = 'file uploaded to S3';
+
+			$response = [
+
+				'success'		=> $success,
+				'message'		=> $message,
+				'insert_id'		=> isset($medium->id) ? $medium->id : FALSE,
+				'file_uri_stub'	=> 'http://'.$app_config['media_options']['AWS']['bucket'].'.s3.amazonaws.com/',
+				'file_uri'		=> '',
+				'file_name'		=> $new_file_name,
+				'is_embeddable' => $is_embeddable,
+				'is_image' 		=> FALSE,
+	        ];
 		}
-
-		$response = [
-
-			'success'		=> $success,
-			'message'		=> $message,
-			'insert_id'		=> isset($medium->id) ? $medium->id : FALSE,
-			'file_uri_stub'	=> 'http://'.$app_config['media_options']['AWS']['bucket'].'.s3.amazonaws.com/',
-			'file_uri'		=> isset($manipulations['file_name']) ? 'http://'.$app_config['media_options']['AWS']['bucket'].'.s3.amazonaws.com/'.'station_thumbs_lg/'.$manipulations['file_name'] : FALSE,
-			'file_name'		=> isset($manipulations['file_name']) ? $manipulations['file_name'] : FALSE
-        ];
-
 
         //return Response::json($response); // was erroring with Resource interpreted as Document but transferred with MIME type application/json: "/station/file/upload".
         echo json_encode($response);
