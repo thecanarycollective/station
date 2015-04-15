@@ -669,3 +669,43 @@ textarea.embedder.open {
     margin: -14px 0 0 0;
     color: #AAA;
 }
+.embedder-md-wrap {
+    float: left;
+    line-height: 12px;
+    width: 70%;
+    box-sizing: border-box;
+    border: 1px solid #00ff00;
+    padding: 4px 10px 7px 10px;
+    background: #ffffcc;
+    margin: -18px 0 0 0;
+}
+.embedder-md {
+	width: 100%;
+	margin: 0;
+	font-size: 12px;
+	padding: 7px 10px;
+}
+
+.embedder-md-wrap p {
+    font-size: 11px;
+    margin: 0;
+    color: #000;
+    padding: 0 0 0 6px;
+    line-height: 24px;
+}
+
+.station-file-options h5 {
+    font-size: 15px;
+    text-align: center;
+    line-height: 10px;
+    margin: 30px 0 0 0;
+}
+
+.station-file-options p {
+    font-size: 12px;
+    text-align: center;
+}
+
+.station-file-options .btn-success {
+    width: 100%;
+}
