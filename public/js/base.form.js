@@ -129,7 +129,7 @@ $(document).ready(function() {
             $('.station-file-options').html('<h5><span class="label label-primary">Loading...</span></h5>').show();
 
             // call func to gen tool buttons
-            create_media_side_controls($parts[0] + '/',$parts[1],$elem_name);
+            create_media_side_controls($parts[0] + '/',$parts[1], $elem_name, $elem_name, true, true);
 
             $('#mediaTab a:first').click();
         }
@@ -186,6 +186,7 @@ $(document).ready(function() {
         $('#station-fileupload-form').submit();
 
         $("#postiframe").load(function () {
+
                 $iframeContents = $("#postiframe")[0].contentWindow.document.body.innerHTML;
                 // console.log($iframeContents);
                 $results = $.parseJSON($iframeContents);
@@ -202,7 +203,7 @@ $(document).ready(function() {
                         //populate sidebar info
                         var $elem_name = $('#mediaModal [name="upload_element_name"]').val();
 
-                        create_media_side_controls($results.file_uri_stub,$results.file_name,$elem_name);
+                        create_media_side_controls($results.file_uri_stub, $results.file_name, $elem_name, $results.is_embeddable, $results.is_image);
                         $(this).remove();
 
 
@@ -339,6 +340,30 @@ $(document).ready(function() {
     $('body').on('click', '.station-crop-canceler', function(event) {
         
         stop_crop_process();
+        return false;
+    });
+
+    $('body').on('click', '.embedder-start', function(event){
+
+        var href     = $(this).data('href');
+        var type     = $(this).data('type');
+        var wrap     = $('div[data-element-name="' + $(this).data('elem-name') + '"]');
+        var markdown = type == 'image' ? '!(' + href + ')' : '[link text](' + href + ')';
+
+        // close modal
+        $('.file-upload-save').click();
+
+        var html = '<div class="embedder-md-wrap"><p>copy/paste this code where you want the file or link to appear:</p><input class="embedder-md" /></div>';
+
+        if (type != 'image') wrap.find('.station-img-thumbnail').attr('src', '/packages/canary/station/img/file-placeholder.png');
+
+        wrap.find('.embedder-md-wrap').remove();
+        wrap.find('.station-file-upload-wrap').append(html);
+        wrap.find('.embedder-md').val(markdown).focus().select().click(function(event) {
+            
+            $(this).select();
+        });
+
         return false;
     });
 
@@ -565,7 +590,7 @@ $(document).ready(function() {
  */
 
     
-    function create_media_side_controls($stub,$filename,$elem_name)
+    function create_media_side_controls($stub,$filename,$elem_name,$is_embeddable, $is_image)
     {
         // now need to dynamically make the column of size buttons on modal and in img form
         var $img_sizes = $.parseJSON($('[name=img_sizes_array]').val());
@@ -588,36 +613,79 @@ $(document).ready(function() {
             }
         }
 
-        // good lord, now we can set the hidden element to the img upload form
+        // now we can set the hidden element to the img upload form
         $('[name=img_sizes]').val(JSON.stringify($this_img_sizes));
 
         // now we need to create the buttons in sidenav for resizing
         var $button_html = '';
-        for(var $j=0;$j<$this_img_sizes.length;$j++)
-        {
-            var has_size = typeof $this_img_sizes[$j][2] != 'undefined';
-            var size_class = !has_size ? 'w-no-size' : '';
 
-            $button_html +=
+        if ($is_image){
 
-                '<div class="btn-group station-crop-size-group ' + size_class + '" data-file-name="' + $filename + '" '
-                        + 'data-element-name="' + $elem_name + '" data-size-name="' + $this_img_sizes[$j][0] + '" data-size="' + $this_img_sizes[$j][2] + '">\n'
-                    + '<button type="button" class="btn btn-xs btn-primary station-crop-start" id="station-filecrop-'+$this_img_sizes[$j][0]+'">'
-                        + '<span class="glyphicon glyphicon-pencil"></span>'
-                    + '</button>\n'
-                    + '<a target="_blank" href="' + $stub + $this_img_sizes[$j][0] + '/' + $filename + '" class="btn btn-xs btn-default" '
-                            + 'id="station-fileview-'+ $this_img_sizes[$j][0] + '">'
-                        + '<span class="glyphicon glyphicon-eye-open img-crop-version-eyeball">&nbsp;</span> '
-                        + '<span class="img-crop-version-label">' + $this_img_sizes[$j][1] + '</span>'
-                    + '</a>\n'
-                + '</div>\n';        
-        }   
+            for(var $j=0 ; $j < $this_img_sizes.length ; $j++){
+
+                var has_size = typeof $this_img_sizes[$j][2] != 'undefined';
+                var size_class = !has_size ? 'w-no-size' : '';
+
+                $button_html +=
+
+                    '<div class="btn-group station-crop-size-group ' + size_class + '" data-file-name="' + $filename + '" '
+                            + 'data-element-name="' + $elem_name + '" data-size-name="' + $this_img_sizes[$j][0] + '" data-size="' + $this_img_sizes[$j][2] + '">\n'
+                        + '<button type="button" class="btn btn-xs btn-primary station-crop-start" id="station-filecrop-'+$this_img_sizes[$j][0]+'">'
+                            + '<span class="glyphicon glyphicon-pencil"></span>'
+                        + '</button>\n'
+                        + '<a target="_blank" href="' + $stub + $this_img_sizes[$j][0] + '/' + $filename + '" class="btn btn-xs btn-default" '
+                                + 'id="station-fileview-'+ $this_img_sizes[$j][0] + '">'
+                            + '<span class="glyphicon glyphicon-eye-open img-crop-version-eyeball">&nbsp;</span> '
+                            + '<span class="img-crop-version-label">' + $this_img_sizes[$j][1] + '</span>'
+                        + '</a>\n'
+                    + '</div>\n';        
+            }
+        }
+
+        if ($is_embeddable){
+
+            if ($is_image){
+
+                var embed_header = '';
+                $button_html += '<h5>Choose Version to Embed:</h5>';
+                $button_html += '<p>Click a size to get the embed code.</p>';
+
+                for(var $j=0 ; $j < $this_img_sizes.length ; $j++){
+
+                    var has_size = typeof $this_img_sizes[$j][2] != 'undefined';
+                    var size_class = !has_size ? 'w-no-size' : '';
+
+                    $button_html +=
+
+                        '<div class="btn-group btn-success station-crop-size-group" data-file-name="' + $filename + '" '
+                                + 'data-element-name="' + $elem_name + '" data-size-name="' + $this_img_sizes[$j][0] + '" data-size="' + $this_img_sizes[$j][2] + '">\n'
+                            + '<a data-type="image" data-href="' + $stub + $this_img_sizes[$j][0] + '/' + $filename + '" class="btn btn-xs btn-success embedder-start" '
+                                    + 'data-elem-name="' + $elem_name + '">'
+                                + '<span class="img-crop-version-label">' + $this_img_sizes[$j][1] + '</span>'
+                            + '</a>\n'
+                        + '</div>\n';        
+                }
+
+            } else { // it's a file
+
+                $button_html +=
+
+                    '<div class="btn-group btn-success station-crop-size-group" data-file-name="' + $filename + '" '
+                            + 'data-element-name="' + $elem_name + '">\n'
+                        + '<a data-type="file" data-href="' + $stub + 'files/' + $filename + '" class="btn btn-xs btn-success embedder-start" '
+                                + 'data-elem-name="' + $elem_name + '">'
+                        + '</a>\n'
+                    + '</div>\n'; 
+
+                // close modal if embedder trigger is there:
+                $('.station-file-options').html($button_html);
+                $('.embedder-start:first').click();
+            }
+        }
 
         $('.station-file-options').html($button_html);
 
         $('.btn-group.w-no-size .station-crop-start').remove();
-        //console.log($this_img_sizes);
-        //console.log($img_sizes);
     }
 
 
