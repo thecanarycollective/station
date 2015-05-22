@@ -348,7 +348,7 @@ $(document).ready(function() {
         var href     = $(this).data('href');
         var type     = $(this).data('type');
         var wrap     = $('div[data-element-name="' + $(this).data('elem-name') + '"]');
-        var markdown = type == 'image' ? '!(' + href + ')' : '[link text](' + href + ')';
+        var markdown = type == 'image' ? '![alt text](' + href + ')' : '[link text](' + href + ')';
 
         // close modal
         $('.file-upload-save').click();
