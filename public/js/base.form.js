@@ -70,7 +70,7 @@ $(document).ready(function() {
         $(datepickerSelector).datepicker({
           showOtherMonths: true,
           selectOtherMonths: true,
-          dateFormat: "MM d yy",
+          dateFormat: $(this).hasClass('with-time') ? "MM d yy 12:00 A" : "MM d yy",
           altField: '#' + $(this).attr('name'),
           altFormat: 'yy-mm-dd'
         });
