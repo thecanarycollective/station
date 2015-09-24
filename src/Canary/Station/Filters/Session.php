@@ -18,7 +18,7 @@ class Session {
 
         if (Auth::guest()) {
 
-            Laravel_Session::put('desired_uri', '/'.Request::path());
+            Laravel_Session::put('desired_uri', Request::getRequestUri());
             return Redirect::to($this->base_uri.'login');
         }
 
