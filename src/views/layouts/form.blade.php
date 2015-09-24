@@ -9,6 +9,12 @@
 			'data-name'		=> $element_name
 		);
 
+		if(Input::has($element_name)) {
+			$attribs['disabled'] = "disabled";
+			$attribs['value'] = Input::get($element_name);
+			$default_value = Input::get($element_name);
+		}
+
 	    return '<div class="input-group">'
 	    		. '<span id="calendar-drop-for-'.$element_name.'" class="input-group-addon"><span class="fui-calendar"></span></span>'
 	    		. Form::text($element_name.'-fake', '' , $attribs)
@@ -188,6 +194,7 @@
 							if (isset($element_info['disabled']) && $element_info['disabled']) $attributes['readonly'] = 'readonly'; 
 							if (isset($element_info['read_only']) && $element_info['read_only']) $attributes['readonly'] = 'readonly'; 
 							if ($has_mask) $attributes['data-mask'] = $element_info['mask']; 
+
 						?>
 						{{ $with_input_wrap ? '<div class="input-group '.$with_append.'">' : '' }}
 						{{ $with_spinner ? '<div class="control-group">' : '' }}
@@ -226,6 +233,7 @@
 
 					{{-- multiselect using foreign data --}}
 					@if($element_info['type']=='multiselect' && isset($foreign_data[$element_name]))
+
 						{{ Form::select($element_name.'[]', 
 							$foreign_data[$element_name], 
 							(Input::old($element_name) || !isset($passed_model)) ? null : $passed_model->$element_name->lists('id'), 
@@ -244,9 +252,17 @@
 
 					{{-- single select --}}
 					@if ($element_info['type'] == 'select' && (isset($foreign_data[$element_name]) || (isset($element_info['data']['options']))))
-						<?php $options = isset($foreign_data[$element_name]) ? $foreign_data[$element_name] : $element_info['data']['options'] ?>
-						<?php $options = array('' => '') + $options ?> {{-- this is needed to display the harvest/chosen placeholder --}}
-						{{ Form::select($element_name, $options, null,['class'=>'chosen-select', 'style' => 'width: 400px', 'id' => $id, 'data-placeholder' => 'Please choose one...']) }}
+						<?php
+							$passed_default = null;
+							$attrib_array = ['class'=>'chosen-select', 'style' => 'width: 400px', 'id' => $id, 'data-placeholder' => 'Please choose one...'];
+							//if preset vals in url for CREATE only
+							if(Input::has($element_name) && $form_purpose == 'create') {
+								$passed_default = Input::get($element_name);
+							}
+							$options = isset($foreign_data[$element_name]) ? $foreign_data[$element_name] : $element_info['data']['options'];
+							$options = array('' => '') + $options; // this is needed to display the harvest/chosen placeholder
+						?>
+						{{ Form::select($element_name, $options, $passed_default,$attrib_array) }}
 					@endif
 
 					{{-- sub panel list --}}
