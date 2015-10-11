@@ -491,6 +491,7 @@ class StationPanelController extends BaseController {
 
 		$panel		= new Panel;
 		$panel_data	= $panel->get_record_for($panel_name, $id, $this->subpanel_parent);
+		$panel_data['data']['id'] = (int)$id;
 
 		$method = 'U';
 
