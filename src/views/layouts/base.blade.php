@@ -11,7 +11,7 @@
 
     @if (isset($assets['css']) and count($assets['css']) > 0)
       @foreach ($assets['css'] as $css_file)
-        <link href="/packages/canary/station/css/{{ $css_file }}" rel="stylesheet">
+        <link href="{{ substr($css_file, 0, 1) == '/' ? $css_file : '/packages/canary/station/css/'.$css_file }}" rel="stylesheet">
       @endforeach
     @endif
 

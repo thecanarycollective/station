@@ -41,6 +41,7 @@ class StationPanelController extends BaseController {
 		View::share('submit_value', 'Save this '.$this->single_item_name);
 
 		if ($this->subpanel_parent) $this->load_js_include($this->user_scope);
+		if ($this->subpanel_parent) $this->load_css_include($this->user_scope);
 
 		return $this->render('form', $panel_data_with_count, $method);
 	}
@@ -672,6 +673,24 @@ class StationPanelController extends BaseController {
 		View::share('item_element', !$is_reorderable && !$is_nestable ? 'td' : 'span');
 	}
 
+	private function load_css_include($panel_data){
+
+		if (isset($panel_data['config']['panel_options']['css_include']) && $panel_data['config']['panel_options']['css_include'] != ''){
+
+			if (is_array($panel_data['config']['panel_options']['css_include'])){
+
+				foreach($panel_data['config']['panel_options']['css_include'] as $css_file){
+
+					$this->assets['css'][] = $css_file;
+				}
+
+			} else {
+
+				$this->assets['css'][] = $panel_data['config']['panel_options']['css_include'];
+			}
+		}
+	}
+
 	private function load_js_include($panel_data){
 
 		if (isset($panel_data['config']['panel_options']['js_include']) && $panel_data['config']['panel_options']['js_include'] != ''){
@@ -750,6 +769,7 @@ class StationPanelController extends BaseController {
 		$configure_method = 'configure_'.$template.'_view';
 		$this->$configure_method($panel_data);
 		$this->load_js_include($panel_data);
+		$this->load_css_include($panel_data);
 
 		$override_response	= $this->override_responded_to($panel_data, $method);
 		$view = $override_response ? $override_response : View::make('station::layouts.'.$template);
