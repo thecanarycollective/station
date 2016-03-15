@@ -6,7 +6,7 @@
 
 	<li class="nav-user-control">
         <a href="/{{ $app_data['root_uri_segment'] }}/panel/my_account/update/{{ $user_data['id'] }}" class="pull-left">
-          <img class="gravatar" src="http://www.gravatar.com/avatar/{{ $user_data['gravatar_hash'] }}?s=30&d=identicon">&nbsp; 
+          <img class="gravatar" src="https://www.gravatar.com/avatar/{{ $user_data['gravatar_hash'] }}?s=30&d=identicon">&nbsp; 
           {{ $user_data['name'] }}
         </a>
         <a href="/{{ $app_data['root_uri_segment'] }}/logout/" class="pull-right"><span class="glyphicon glyphicon-log-out"></span></a>
