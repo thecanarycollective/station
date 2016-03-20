@@ -44,7 +44,7 @@
 
     @if (isset($assets['js']) and count($assets['js']) > 0)
       @foreach ($assets['js'] as $js_file)
-        <script src="{{ substr($js_file, 0, 1) == '/' ? $js_file : '/packages/canary/station/js/'.$js_file }}"></script>
+        <script src="{{ substr($js_file, 0, 1) == '/' || substr($js_file, 0, 4) == 'http' ? $js_file : '/packages/canary/station/js/'.$js_file }}"></script>
       @endforeach
     @endif
 
