@@ -120,7 +120,7 @@ class Build extends Command {
 				$ret = ':float';
 				break;
 			case 'boolean':
-				$ret = ':boolean';
+				$ret = ':boolean:nullable';
 				break;
 			default:
 				$ret = ':string';
