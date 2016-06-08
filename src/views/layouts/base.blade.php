@@ -59,7 +59,7 @@
   @show
 
   </head>
-  <body>
+  <body class="panel-{{ $curr_panel }}">
     
     @if(Auth::check())
 
