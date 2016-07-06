@@ -322,8 +322,15 @@ class StationFileController extends BaseController {
 			$mime = $this->mime;
 		}
 
-		usleep(300000); // ease the pressure on S3 (seeing some 500 responses, possibly due to overload?)
-		$this->s3->putObject(file_get_contents($this->tmp_dir.'/'.$file), $app_config['media_options']['AWS']['bucket'], $target, 'public-read',array(),$mime);
+		try {
+	
+			$this->s3->putObject(file_get_contents($this->tmp_dir.'/'.$file), $app_config['media_options']['AWS']['bucket'], $target, 'public-read',array(),$mime);
+
+		} catch (Exception $e){
+
+			// do nothing. sometimes S3 reports a 500 error here even though the upload was successful.
+		}
+		
 		unset($this->s3);
 	}
 
