@@ -326,7 +326,7 @@ class StationFileController extends BaseController {
 	
 			$this->s3->putObject(file_get_contents($this->tmp_dir.'/'.$file), $app_config['media_options']['AWS']['bucket'], $target, 'public-read',array(),$mime);
 
-		} catch (Exception $e){
+		} catch (S3Exception $e){
 
 			// do nothing. sometimes S3 reports a 500 error here even though the upload was successful.
 		}
