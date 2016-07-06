@@ -128,7 +128,7 @@ class StationFileController extends BaseController {
 			$image->set_jpeg_quality(100);
 			$image->$method($x_val, $y_val, $letterbox_color ? TRUE : FALSE);
 			$image->save($this->tmp_dir.'/_'.$file, TRUE); // save, keep original, prepend new file with underscore.
-			usleep(250000); // ease the pressure on S3 (seeing some 500 responses, possibly due to overload?)
+			
 			$this->send_to_s3('_'.$file, $directory,$app_config); // send new file.
 
 			$i++;
@@ -322,6 +322,7 @@ class StationFileController extends BaseController {
 			$mime = $this->mime;
 		}
 
+		usleep(300000); // ease the pressure on S3 (seeing some 500 responses, possibly due to overload?)
 		$this->s3->putObject(file_get_contents($this->tmp_dir.'/'.$file), $app_config['media_options']['AWS']['bucket'], $target, 'public-read',array(),$mime);
 		unset($this->s3);
 	}
