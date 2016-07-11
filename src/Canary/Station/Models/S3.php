@@ -118,7 +118,7 @@ class S3
 	 * @access public
 	 * @static
 	 */
-	public static $useExceptions = false;
+	public static $useExceptions = true;
 
 	/**
 	 * Time offset applied to time()
