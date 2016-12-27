@@ -51,6 +51,7 @@ $(document).ready(function() {
             altField:           alt_field, 
             altFormat:          $(this).hasClass('with-time') ? 'Y-O-D H:M:S' : 'Y-O-D',
             ampmPrefix:         ' ',
+            spinnerImage:       '/packages/canary/station/js/query-datetime/spinnerDefault.png',
             spinnerSize:        [0,0,0],
             datetimeSeparators: ' ',
             useMouseWheel:      false
@@ -426,7 +427,51 @@ $(document).ready(function() {
     });
 
     load_clipboard_behaviors();
+    init_tabs();
 });
+
+/**
+ * for tabs
+ */
+    function init_tabs(){
+
+        var tab_groups = [];
+
+        $('.station-element-group').each(function(index, el) {
+            var group_name = $(this).data('element-group');
+            if ($.inArray(group_name, tab_groups) == -1) tab_groups.push(group_name);
+        });
+
+        if (tab_groups.length > 1){
+
+            $('.station-form').before('<div class="station-group-tabs"></div>');
+
+            $.each(tab_groups, function(index, val) {
+                $('.station-group-tabs').append('<a href="javascript:;" data-rel="' + val + '">' + val + '</a>');
+            });
+
+            $('.station-group-tabs a').click(function(event) {
+                group_tab_click($(this).html());
+                return false;
+            });
+
+            $('.station-group-tabs a:first').click();
+        }
+    }
+
+    function group_tab_click(group){
+
+        var tabs    = $('.station-group-tabs a');
+        var tab     = $('.station-group-tabs a[data-rel="' + group + '"]');
+        var els     = $('.station-element-group[data-element-group="' + group + '"]');
+        var all_els = $('.station-element-group');
+
+        tabs.removeClass('active');
+        tab.addClass('active');
+
+        all_els.hide();
+        els.show();
+    }
 
 /**
  * for url fetching

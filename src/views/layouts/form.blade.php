@@ -114,7 +114,9 @@
 
 			@foreach($panel_data['elements'] as $element_name => $element_info)
 
-				<div class="form-group station-element-group" data-element-name="{{ $element_name }}" {{ $element_info['type'] == 'hidden' ? 'style="display: none;"' : '' }}>
+				<div class="form-group station-element-group" 
+					data-element-name="{{ $element_name }}" {{ $element_info['type'] == 'hidden' ? 'style="display: none;"' : '' }}
+					data-element-group="{{{ isset($element_info['group']) ? $element_info['group'] : '' }}}">
 					
 					<?php 
 						$id					= 'station-'.$element_name;

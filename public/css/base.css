@@ -53,6 +53,7 @@
 }
 .station-form {
 	margin: 0 0 150px;
+	clear: both;
 }
 .navbar .navbar-form {
 	margin: 0 -21px 0 0 !important;
@@ -69,14 +70,16 @@
 	border-radius: 0;
 }
 .nav-list .nav-header {
-	padding-top: 20px !important;
-	color: #F8F7F7 !important;
-	font-weight: 200;
+	padding-top: 9px !important;
+	color: #e6e6e6 !important;
+	font-weight: 500;
 	cursor: pointer;
 	text-transform: none;
-	font-size: 15px !important;
+	font-size: 13px !important;
 	padding-left: 40px;
 	padding-right: 31px;
+	border-top: 1px solid rgba(128, 116, 120, 0.23);
+	padding-bottom: 6px;
 }
 .nav-list .nav-header:hover {
 	color: #eee !important;
@@ -708,4 +711,38 @@ textarea.embedder.open {
 
 .station-file-options .btn-success {
     width: 100%;
+}
+
+
+.nav-list .nav-header:hover {
+    background: #352b2e;
+}
+
+.station-group-tabs {
+    border-bottom: 1px solid #565656;
+    margin: 0 0 33px 0;
+    float: left;
+    width: 100%;
+    clear: both;
+}
+
+.station-group-tabs a {
+    font-size: 14px;
+    border: 1px solid #ccc;
+    line-height: 34px;
+    display: block;
+    float: left;
+    padding: 0 15px;
+    background: #bdc3c7;
+    margin: 0 -3px -1px 7px;
+    border-bottom: 1px solid #333;
+    color: #fff;
+    border-radius: 5px 5px 0 0;
+}
+
+.station-group-tabs a.active {
+    background: #fff;
+    color: #333;
+    border: 1px solid #333;
+    border-bottom: 1px solid #fff;
 }

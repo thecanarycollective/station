@@ -18,7 +18,7 @@
 
     <link href="/packages/canary/station/Flat-UI-Pro-1.2.2/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="/packages/canary/station/Flat-UI-Pro-1.2.2/css/flat-ui.css" rel="stylesheet">
-    <link href="/packages/canary/station/css/base.css?v10" rel="stylesheet">
+    <link href="/packages/canary/station/css/base.css?v11" rel="stylesheet">
     {{ $app_data['css_override_file'] != '' ? '<link href="'.$app_data['css_override_file'].'" rel="stylesheet">' : '' }}
 
     <script src="/packages/canary/station/js/jquery-1.11.2.min.js"></script>
