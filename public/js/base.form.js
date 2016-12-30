@@ -456,6 +456,24 @@ $(document).ready(function() {
             });
 
             $('.station-group-tabs a:first').click();
+
+            $('.station-form').submit(function(event) {
+                
+                $(this).find('button').hide();
+                $(this).find('button[name="after_save"]').html('Saving...').show();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    dataType: 'html',
+                    data: $(this).serialize(),
+                })
+                .done(function() {
+                    $('.station-form').find('button[name="after_save"]').html('Saved. Save Again?').blur();
+                });
+                
+                return false;
+            });
         }
     }
 
@@ -471,6 +489,8 @@ $(document).ready(function() {
 
         all_els.hide();
         els.show();
+
+        window.location = '#' + group.split(' ').join('+');;
     }
 
 /**
