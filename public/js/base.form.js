@@ -459,8 +459,8 @@ $(document).ready(function() {
 
             $('.station-form').submit(function(event) {
                 
-                $(this).find('button').hide();
-                $(this).find('button[name="after_save"]').html('Saving...').show();
+                $(this).find('button.station-form-submit').hide();
+                $(this).find('button.station-form-submit[name="after_save"]').html('Saving...').show();
 
                 $.ajax({
                     url: $(this).attr('action'),
@@ -469,7 +469,7 @@ $(document).ready(function() {
                     data: $(this).serialize(),
                 })
                 .done(function() {
-                    $('.station-form').find('button[name="after_save"]').html('Saved. Save Again?').blur();
+                    $('.station-form').find('button.station-form-submit[name="after_save"]').html('Saved. Save Again?').blur();
                 });
                 
                 return false;
