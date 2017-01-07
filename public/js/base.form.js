@@ -457,23 +457,28 @@ $(document).ready(function() {
 
             $('.station-group-tabs a:first').click();
 
-            $('.station-form').submit(function(event) {
-                
-                $(this).find('button.station-form-submit').hide();
-                $(this).find('button.station-form-submit[name="after_save"]').html('Saving...').show();
+            var is_creating = typeof $('.station-form input[name="_method"]').val() == 'undefined';
 
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: 'POST',
-                    dataType: 'html',
-                    data: $(this).serialize(),
-                })
-                .done(function() {
-                    $('.station-form').find('button.station-form-submit[name="after_save"]').html('Saved. Save Again?').blur();
+            if (!is_creating){
+
+                $('.station-form').submit(function(event) {
+
+                    $(this).find('button.station-form-submit').hide();
+                    $(this).find('button.station-form-submit[name="after_save"]').html('Saving...').show();
+
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: 'POST',
+                        dataType: 'html',
+                        data: $(this).serialize(),
+                    })
+                    .done(function() {
+                        $('.station-form').find('button.station-form-submit[name="after_save"]').html('Saved. Save Again?').blur();
+                    });
+                    
+                    return false;
                 });
-                
-                return false;
-            });
+            }
         }
     }
 
