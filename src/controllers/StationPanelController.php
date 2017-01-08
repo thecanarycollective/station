@@ -216,7 +216,7 @@ class StationPanelController extends BaseController {
 	}
 
 	public function do_reorder($panel_name){
-		
+
 		if (!Input::get('ids')) return Response::json(array('status' => 0, 'reason' => 'no reorder instructions'));
 
 		$this->init($panel_name, 'L'); // let's say the user is allowed to reorder if they can access the list
@@ -227,10 +227,6 @@ class StationPanelController extends BaseController {
 		if (!$reorder_column) return Response::json(array('status' => 0, 'reason' => 'no column to reorder on'));
 
 		$panel		= new Panel;
-		$panel_data	= $panel->get_data_for($panel_name, FALSE, $this->subpanel_parent);
-
-		if (!$panel_data) return Response::json(array('status' => 0, 'reason' => 'no panel data to reorder'));
-		
 		$reordered = $panel->reorder($opts['table'], $reorder_column, Input::get('ids'));
 
 		return Response::json(array('status' => $reordered ? 1 : 0));
@@ -618,7 +614,7 @@ class StationPanelController extends BaseController {
 
 	private function configure_form_view($panel_data){
 
-		$this->assets['js'][]	= 'base.form.js?v4';
+		$this->assets['js'][]	= 'base.form.js?v3';
 		$this->assets['js'][]	= 'chosen_v1.0.0/chosen.jquery.min.js';
 		$this->assets['js'][]	= 'tapmodo-Jcrop-1902fbc/js/jquery.Jcrop.min.js';
 		$this->assets['js'][]	= 'query-datetime/jquery.datetimeentry.min.js';
