@@ -455,7 +455,17 @@ $(document).ready(function() {
                 return false;
             });
 
-            $('.station-group-tabs a:first').click();
+            var hash = window.location.hash.substr(1);
+
+            if (hash != ''){
+
+                group_tab_click(hash);
+
+            } else {
+
+                $('.station-group-tabs a:first').click();
+            }
+            
 
             var is_creating = typeof $('.station-form input[name="_method"]').val() == 'undefined';
 
