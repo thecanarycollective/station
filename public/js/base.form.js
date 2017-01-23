@@ -459,7 +459,7 @@ $(document).ready(function() {
 
             if (hash != ''){
 
-                group_tab_click(hash);
+                group_tab_click(hash.replace(/\+/g, " "));
 
             } else {
 
