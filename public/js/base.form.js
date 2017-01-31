@@ -479,11 +479,25 @@ $(document).ready(function() {
                     $.ajax({
                         url: $(this).attr('action'),
                         type: 'POST',
-                        dataType: 'html',
+                        dataType: 'json',
                         data: $(this).serialize(),
                     })
-                    .done(function() {
-                        $('.station-form').find('button.station-form-submit[name="after_save"]').html('Saved. Save Again?').blur();
+                    .done(function(response) {
+
+                        var button = $('.station-form').find('button.station-form-submit[name="after_save"]');
+                        $('.flash-response').remove();
+
+                        if (response.status) {
+
+                            button.html('Saved. Save Again?').blur();
+
+                        } else {
+
+                            button.closest('div').prepend(response.flash);
+                            button.html('Fixed? Try Saving Again').blur();
+                            $('.flash-response').width('100%');
+                        }
+                        
                     });
                     
                     return false;
